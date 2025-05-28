@@ -258,6 +258,8 @@ class MINDEstimator(pl.LightningModule):
             'callbacks': [checkpoint_callback],
             'logger': logger,
             'log_every_n_steps': 10,
+               "devices":1,
+            "strategy":'auto' 
         })
        
         if self.hparams.max_epochs:

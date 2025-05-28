@@ -309,13 +309,16 @@ class MINDEstimator(pl.LightningModule):
             save_last=False,
             save_top_k=1,
             monitor='train_loss',
-            mode='min'
+            mode='min',
         )
         logger = self.configure_logger(train_sample_num)
         trainer_kwargs.update({
             'callbacks': [checkpoint_callback],
             'logger': logger,
             'log_every_n_steps': 10,
+             "devices":1,
+            "strategy":'auto' 
+
         })
        
         if self.hparams.max_epochs:
