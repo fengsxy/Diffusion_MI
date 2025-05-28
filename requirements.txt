@@ -1,0 +1,8 @@
+benchmark-mi==0.1.3
+pytorch-lightning
+lightning
+torch
+torchvision 
+torchaudio
+matplotlib
+tensorboardX
