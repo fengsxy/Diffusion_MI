@@ -108,8 +108,6 @@ class MINDEstimator(pl.LightningModule):
             eps_hat_high = self.model_high(z_high, logsnr_high, y_high)
             error_high = (eps_high - eps_hat_high).flatten(start_dim=1)
             total_error[high_mask] = t.einsum('ij,ij->i', error_high, error_high)
-
-        # Apply strength parameter to modulate the error contribution
         return total_error
 
     def mse_orthogonal(self, x, logsnr, y):
