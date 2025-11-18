@@ -1,13 +1,13 @@
 # DMI - Diffusion-based Mutual Information Estimation
 
-A PyTorch Lightning implementation of Mutual Information Neural Diffusion (MIND) Estimator with both unified and Hierarchical Mixture of Experts (MOE) architectures for robust mutual information estimation.
+A PyTorch Lightning implementation of Mutual Information Neural Diffusion (MMG) Estimator with both unified and Hierarchical Mixture of Experts (MOE) architectures for robust mutual information estimation.
 
 ## Overview
 
 This project implements novel approaches to mutual information estimation using diffusion models. It provides two distinct architectures:
 
-1. **Unified Model** (`Mind_Unet.py`): Single denoising network handling all noise levels
-2. **Mixture of Experts (MOE)** (`Mind_Unet_MOE.py`): Separate specialized models for different Signal-to-Noise Ratio (SNR) regions
+1. **Unified Model** (`MMG_Unet.py`): Single denoising network handling all noise levels
+2. **Mixture of Experts (MOE)** (`MMG_Unet_MOE.py`): Separate specialized models for different Signal-to-Noise Ratio (SNR) regions
 
 ### Key Features
 
@@ -20,13 +20,13 @@ This project implements novel approaches to mutual information estimation using 
 
 ## Architecture Comparison
 
-### Unified Model (`Mind_Unet.py`)
+### Unified Model (`MMG_Unet.py`)
 - Single denoising network processes all samples
 - Simpler architecture with fewer parameters
 - Faster training and inference
 - Good baseline performance
 
-### MOE Model (`Mind_Unet_MOE.py`)
+### MOE Model (`MMG_Unet_MOE.py`)
 - Separate models for low SNR (< threshold) and high SNR (≥ threshold) samples
 - Specialized expertise for different noise conditions
 - More parameters but potentially better performance
@@ -175,8 +175,8 @@ This runs experiments across:
 
 ```
 DMI/
-├── Mind_Unet_MOE.py           # MOE architecture implementation
-├── Mind_Unet.py               # Unified model implementation  
+├── MMG_Unet_MOE.py           # MOE architecture implementation
+├── MMG_Unet.py               # Unified model implementation  
 ├── main.py                    # Main training and evaluation script
 ├── model/
 │   └── denoiser.py           # Denoiser network architecture
@@ -219,7 +219,7 @@ Results are saved to JSON files with detailed metrics:
   "gt_mi": 8.465,
   "mi_estimate": 8.431,
   "mi_estimate_orthogonal": 8.447,
-  "estimator": "MINDEstimator_MOE",
+  "estimator": "MMGEstimator_MOE",
   "use_moe": true,
   "snr_threshold": 5.0,
   "model_dim": 64,
@@ -291,4 +291,3 @@ python main.py \
 - **Memory issues**: Reduce `--batch_size` or `--model_dim`  
 - **Convergence problems**: Enable `--use_ema`, adjust `--learning_rate`
 - **MOE routing issues**: Adjust `--snr_threshold`
-

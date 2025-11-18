@@ -10,7 +10,7 @@ from model import Denoiser
 from utils import EMA
 
 
-class MINDEstimator(pl.LightningModule):
+class MMGEstimator(pl.LightningModule):
     """
     Mutual Information Neural Diffusion Estimator using a Hierarchical Mixture of Experts approach
     """
@@ -45,7 +45,7 @@ class MINDEstimator(pl.LightningModule):
         self.dim = dim
         
         self.task_name = task_name
-        self.logger_name = f"mind_estimator_{task_name}_seed_{seed}_lr_{learning_rate}_strength_{strength}_dim_{dim}_MOE"
+        self.logger_name = f"mmg_estimator_{task_name}_seed_{seed}_lr_{learning_rate}_strength_{strength}_dim_{dim}_MOE"
         self.task_gt = task_gt
         self.test_num = test_num
         self.logsnr_scale = logsnr_scale
@@ -305,7 +305,7 @@ class MINDEstimator(pl.LightningModule):
         """Configure PyTorch Lightning trainer"""
         checkpoint_callback = ModelCheckpoint(
             dirpath=f'checkpoints/{self.task_name}',
-            filename=f'mind_estimator-{self.logger_name}-{train_sample_num}',
+            filename=f'mmg_estimator-{self.logger_name}-{train_sample_num}',
             save_last=False,
             save_top_k=1,
             monitor='train_loss',
@@ -333,7 +333,7 @@ class MINDEstimator(pl.LightningModule):
         Load model from checkpoint
         
         Usage:
-        model = MINDEstimator.load_model(checkpoint_path)
+        model = MMGEstimator.load_model(checkpoint_path)
         '''
         model = cls.load_from_checkpoint(checkpoint_path, **kwargs)
         return model

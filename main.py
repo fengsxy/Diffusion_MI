@@ -8,7 +8,7 @@ from sklearn import preprocessing
 
 def parse_arguments():
     """Parse command line arguments"""
-    parser = argparse.ArgumentParser(description="Train and evaluate MIND estimator with optional MOE")
+    parser = argparse.ArgumentParser(description="Train and evaluate MMG estimator with optional MOE")
     
     # Model architecture parameters
     parser.add_argument('--use_moe', action='store_true',
@@ -100,13 +100,13 @@ def get_task(task_type, dim, strength, bmi):
 def get_estimator_class(use_moe):
     """Import and return the appropriate estimator class"""
     if use_moe:
-        from MIND_Unet_MOE import MINDEstimator
+        from MMG_Unet_MOE import MMGEstimator
         print("Using Mixture of Experts (MOE) architecture")
     else:
-        from MIND_Unet import MINDEstimator
+        from MMG_Unet import MMGEstimator
         print("Using unified single model architecture")
     
-    return MINDEstimator
+    return MMGEstimator
 
 
 def run_experiment(args, task, bmi):
@@ -159,7 +159,7 @@ def run_experiment(args, task, bmi):
         Y_test = scaler_Y.transform(Y_test)
     
     # Get the appropriate estimator class
-    MINDEstimator = get_estimator_class(args.use_moe)
+    MMGEstimator = get_estimator_class(args.use_moe)
     
     # Initialize model with conditional parameters
     model_kwargs = {
@@ -186,19 +186,19 @@ def run_experiment(args, task, bmi):
     if args.use_moe:
         model_kwargs['snr_threshold'] = args.snr_threshold
     
-    print(f"Initializing MIND estimator ({'MOE' if args.use_moe else 'Unified'}) with strength={args.strength}, dim={args.model_dim}...")
-    estimator = MINDEstimator(**model_kwargs)
+    print(f"Initializing MMG estimator ({'MOE' if args.use_moe else 'Unified'}) with strength={args.strength}, dim={args.model_dim}...")
+    estimator = MMGEstimator(**model_kwargs)
     
     # Define checkpoint path
     model_type = "moe" if args.use_moe else "unified"
     ckpt_dir = f'checkpoints/{task.task_name}'
     os.makedirs(ckpt_dir, exist_ok=True)
-    ckpt_path = f'{ckpt_dir}/mind_estimator_{model_type}-{estimator.logger_name}-{args.train_sample_num}.ckpt'
+    ckpt_path = f'{ckpt_dir}/mmg_estimator_{model_type}-{estimator.logger_name}-{args.train_sample_num}.ckpt'
     
     # Either load from checkpoint or train the model
     if args.load_ckpt and os.path.exists(ckpt_path):
         print(f"Loading model from checkpoint: {ckpt_path}")
-        estimator = MINDEstimator.load_model(checkpoint_path=ckpt_path)
+        estimator = MMGEstimator.load_model(checkpoint_path=ckpt_path)
         print(f"LogSNR loc: {estimator.logsnr_loc}, scale: {estimator.logsnr_scale}")
     else:
         print("Training model...")
@@ -219,7 +219,7 @@ def run_experiment(args, task, bmi):
         "gt_mi": task.mutual_information,
         "mi_estimate": mi_estimate,
         "mi_estimate_orthogonal": mi_orthogonal,
-        "estimator": f"MINDEstimator_{'MOE' if args.use_moe else 'Unified'}",
+        "estimator": f"MMGEstimator_{'MOE' if args.use_moe else 'Unified'}",
         "use_moe": args.use_moe,
         "snr_threshold": args.snr_threshold if args.use_moe else None,
         "seed": args.seed,
